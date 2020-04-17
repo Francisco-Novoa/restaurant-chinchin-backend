@@ -6,7 +6,7 @@ from flask_jwt_extended import(
 )
 bcrypt = Bcrypt()
 route_users = Blueprint('route_users', __name__)
-
+#yana
 @route_users.route('/users', methods = ['GET'])
 @route_users.route('/users/<int:id>', methods = ['GET', 'PUT', 'DELETE'])
 def users(id = None):
