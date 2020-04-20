@@ -9,9 +9,10 @@ from flask_jwt_extended import(
     JWTManager, get_jwt_identity
 )
 from datetime import timedelta
-from models import db, User
+from models import db, User, Restaurantuser
 from routes.user import route_users
-
+from routes.restaurantuser import route_restaurantusers
+from routes.admin import route_admins
 
 # app inits and coginfs
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -39,6 +40,8 @@ def main():
 
 
 app.register_blueprint(route_users)
+app.register_blueprint(route_restaurantusers)
+app.register_blueprint(route_admins)
 
 if __name__ == "__main__":
     manager.run()
