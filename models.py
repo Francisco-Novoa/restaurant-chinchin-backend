@@ -58,6 +58,53 @@ class Admin(db.Model):
             'email': self.email,
         }
 
+class Product(db.Model):
+    __tablename__ = 'product'
+    id_product = db.Column(db.Integer,primary_key = True)
+    name_product = db.Column(db.String(255), nullable = True)
+    description = db.Column(db.String(255), unique=True, nullable = False)
+    price = db.Column(db.Integer, nullable = True)
+    id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
+
+    def __repr__(self):
+        return 'Product %r' % self.name_product
+
+    def serialize(self):
+        return{
+            'id_product': self.id_product,
+            'name_product': self.name_product,
+            'description': self.description,
+            'price': self.price,
+            'id_restaurant': self.restaurantusers.serialize(),
+        }
+
+
+class Ingredient(db.Model):
+    __tablename__ = 'ingredient'
+    id_ingredinet = db.Column(db.Integer,primary_key = True)
+    name_ingredinet = db.Column(db.String(100), nullable = True)
+    price = db.Column(db.Float, nullable = False)
+    id_product = db.Column(db.Integer, db.ForeignKey('product.id_product'), nullable = True)
+
+    def __repr__(self):
+        return 'Ingredient %r' % self.name_ingredient
+
+    def serialize(self):
+        return{
+            'id_ingredient': self.id_ingredient,
+            'name_ingredient': self.name_ingredient,
+            'price': self.price,
+            'id_product': self.product.serialize()
+        }
+
+
+
+
+
+
+
+
+
 """ class Restaurant(db.Model):
     __tablename__ = 'restaurants'
     id = db.Column(db.Integer, primary_key = True)
