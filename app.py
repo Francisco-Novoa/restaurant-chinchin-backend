@@ -14,6 +14,7 @@ from routes.user import route_users
 from routes.restaurantuser import route_restaurantusers
 from routes.admin import route_admins
 from routes.product import route_product
+from routes.ingredient import route_ingredient
 
 # app inits and coginfs
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -44,6 +45,7 @@ app.register_blueprint(route_users)
 app.register_blueprint(route_restaurantusers)
 app.register_blueprint(route_admins)
 app.register_blueprint(route_product)
+app.register_blueprint(route_ingredient)
 
 if __name__ == "__main__":
     manager.run()
