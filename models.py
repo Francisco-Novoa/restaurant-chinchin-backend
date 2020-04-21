@@ -88,8 +88,8 @@ class Product(db.Model):
 
 class Ingredient(db.Model):
     __tablename__ = 'ingredient'
-    id_ingredinet = db.Column(db.Integer,primary_key = True)
-    name_ingredinet = db.Column(db.String(100), nullable = True)
+    id_ingredient = db.Column(db.Integer,primary_key = True)
+    name_ingredient = db.Column(db.String(100), nullable = True)
     price = db.Column(db.Float, nullable = False)
     id_product = db.Column(db.Integer, db.ForeignKey('product.id_product'))
 
