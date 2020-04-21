@@ -61,9 +61,9 @@ class Admin(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
     id_product = db.Column(db.Integer,primary_key = True)
-    name_product = db.Column(db.String(255), nullable = True)
-    description = db.Column(db.String(255), unique=True, nullable = False)
-    price = db.Column(db.Integer, nullable = True)
+    name_product = db.Column(db.String(255), nullable = False)
+    description = db.Column(db.String(255), unique=True, nullable = True)
+    price = db.Column(db.Float, nullable = False)
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
 
     def __repr__(self):
@@ -84,7 +84,7 @@ class Ingredient(db.Model):
     id_ingredinet = db.Column(db.Integer,primary_key = True)
     name_ingredinet = db.Column(db.String(100), nullable = True)
     price = db.Column(db.Float, nullable = False)
-    id_product = db.Column(db.Integer, db.ForeignKey('product.id_product'), nullable = True)
+    id_product = db.Column(db.Integer, db.ForeignKey('product.id_product'))
 
     def __repr__(self):
         return 'Ingredient %r' % self.name_ingredient
