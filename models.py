@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
-
-import datetime
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -12,7 +11,6 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable = False)
     password_hash = db.Column(db.String(255), nullable = True)
     phone = db.Column(db.Integer, nullable = False)
-    order= db.relationship("Orders", backref = backref('children', cascade = 'all, delete'))
 
     def __repr__(self):
         return 'User %r' % self.name
@@ -24,7 +22,6 @@ class User(db.Model):
             'email': self.email,
             'phone': self.phone,
         }
-
 class Restaurantuser(db.Model):
     __tablename__ = 'restaurantusers'
     id = db.Column(db.Integer,primary_key = True)
@@ -33,8 +30,6 @@ class Restaurantuser(db.Model):
     password_hash = db.Column(db.String(255), nullable = True)
     phone = db.Column(db.Integer, nullable = False)
     address = db.Column(db.String(255), nullable = True)
-    product= db.relationship("Product", backref = backref('children', cascade = 'all, delete'))
-    order= db.relationship("Orders", backref = backref('children', cascade = 'all, delete'))
 
     def __repr__(self):
         return 'Restaurantuser %r' % self.name
@@ -68,11 +63,11 @@ class Admin(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
     id_product = db.Column(db.Integer,primary_key = True)
-    name_product = db.Column(db.String(255), nullable = False)
-    description = db.Column(db.String(255), unique=True, nullable = True)
+    name_product = db.Column(db.String(255), unique=True, nullable = False)
+    description = db.Column(db.String(255), nullable = True)
     price = db.Column(db.Float, nullable = False)
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
-    order_details= db.relationship("Orders_details", backref = backref('children', cascade = 'all, delete'))
+    restaurantuser = db.relationship(Restaurantuser, backref = backref('children', cascade = 'all, delete'))
 
     def __repr__(self):
         return 'Product %r' % self.name_product
@@ -86,12 +81,14 @@ class Product(db.Model):
             'id_restaurant': self.restaurantusers.serialize(),
         }
 
+
 class Ingredient(db.Model):
     __tablename__ = 'ingredient'
     id_ingredient = db.Column(db.Integer,primary_key = True)
-    name_ingredient = db.Column(db.String(100), nullable = True)
-    price = db.Column(db.Float, nullable = False)
+    name_ingredient = db.Column(db.String(100), unique=True, nullable = False)
+    price = db.Column(db.Float, nullable = True)
     id_product = db.Column(db.Integer, db.ForeignKey('product.id_product'))
+    product = db.relationship(Product, backref = backref('children', cascade = 'all, delete'))
 
     def __repr__(self):
         return 'Ingredient %r' % self.name_ingredient
@@ -117,40 +114,14 @@ class Orders(db.Model):
     def __repr__(self):
         return 'Order %r' % self.name
 
-    def serialize(self):
-        return{
-            'id': self.id_order,
-            'date': self.date,
-            'total': self.total,
-            "comment": self.comment,
-            'user': self.user.serialize(),
-            'restaurant': self.restaurantusers.serialize()
-        }
 
-class Orders_details(db.Model):
-    __tablename__ = 'order_details'
-    id_order_detail = db.Column(db.Integer,primary_key = True)
-    amount = db.Column(db.Integer)
-    total = db.Column(db.Integer)
-    id_product = db.Column(db.Integer, db.ForeignKey("product.id_product"))
-    id_order = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
 
-    def __repr__(self):
-        return 'Order details %r' % self.name
 
-    def serialize(self):
-        return{
-            'id': self.id_order_detail,
-            'amount': self.amount,
-            'total': self.total,
-            'id_product': self.product.serialize(),
-            'id_order': self.order.serialize()
-        }
 
 
 
 """ class Restaurant(db.Model):
-    __tablename__ = 'restaurants'
+3    __tablename__ = 'restaurants'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(255), unique=True, nullable = True)
     address = db.Column(db.String(255), nullable = True)
