@@ -23,7 +23,7 @@ def get_all_orders(id=None):
     "comment":"comment_text",
     "productos":"["product_id1 , amount",]
 }
-"""
+
 @route_orders("neworder", methods=["POST"])
 def neworder():
     id_user=request.json.get("user_id")
@@ -71,4 +71,4 @@ def neworder():
 
 
 
-
+"""
