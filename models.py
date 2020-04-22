@@ -1,7 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
+<<<<<<< HEAD
 from datetime import datetime
 
+=======
+>>>>>>> 6d28d06587a5933711fc1901d0a8342a832292f6
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -101,6 +104,7 @@ class Ingredient(db.Model):
             'id_product': self.product.serialize()
         }
 
+<<<<<<< HEAD
 class Orders(db.Model):
     __tablename__ = 'order'
     id_order = db.Column(db.Integer,primary_key = True)
@@ -113,6 +117,9 @@ class Orders(db.Model):
 
     def __repr__(self):
         return 'Order %r' % self.name
+=======
+
+>>>>>>> 6d28d06587a5933711fc1901d0a8342a832292f6
 
 
 
