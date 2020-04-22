@@ -114,7 +114,6 @@ class Orders(db.Model):
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
     order_details= db.relationship("Orders_details", backref = backref('children', cascade = 'all, delete'))
 
-
     def __repr__(self):
         return 'Order %r' % self.name
 
