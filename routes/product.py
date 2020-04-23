@@ -17,7 +17,7 @@ def post_product():
     _description = request.json.get('description')
     _price = request.json.get('price')
     id_restaurant = request.json.get("id_restaurant")
-
+    print("b")
     if not _name_product or _name_product == '':
         return jsonify({'msg':'Field name product is required'}), 400
     if not _price or _price == '':
