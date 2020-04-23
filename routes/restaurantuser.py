@@ -6,10 +6,10 @@ from flask_jwt_extended import(
 )
 bcrypt = Bcrypt()
 route_restaurantusers = Blueprint('route_restaurantusers', __name__)
-#yana
-@route_restaurantusers.route('/restaurantusers', methods = ['GET'])
-@route_restaurantusers.route('/restaurantusers/<int:id>', methods = ['GET', 'PUT', 'DELETE'])
-def restaurantusers(id = None):
+# yana
+@route_restaurantusers.route('/restaurantusers', methods=['GET'])
+@route_restaurantusers.route('/restaurantusers/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+def restaurantusers(id=None):
     if request.method == 'GET':
         if id is not None:
             restaurantuser = Restaurantuser.query.get(id)
@@ -19,7 +19,8 @@ def restaurantusers(id = None):
                 return jsonify({"restaurantuser": "Not found"}), 404
         else:
             restaurantusers = Restaurantuser.query.all()
-            restaurantusers = list(map(lambda restaurantuser: restaurantuser.serialize(), restaurantusers))
+            restaurantusers = list(
+                map(lambda restaurantuser: restaurantuser.serialize(), restaurantusers))
             return jsonify(restaurantusers), 200
 
     if request.method == 'PUT':
@@ -37,9 +38,9 @@ def restaurantusers(id = None):
         db.session.delete(restaurantuser)
         db.session.commit()
 
-        return jsonify({'restaurantuser':'Deleted'}), 200
-    
-    
+        return jsonify({'restaurantuser': 'Deleted'}), 200
+
+
 @route_restaurantusers.route('/restaurantlogin', methods=['POST'])
 def login():
     email = request.json.get('email')
@@ -59,9 +60,10 @@ def login():
             "restaurantuser": restaurantuser.serialize()
         }
         return jsonify(data), 200
-    else: 
+    else:
         return jsonify({"msg": "Email or password is not correct"}), 401
-        
+
+
 @route_restaurantusers.route('/restaurantregistration', methods=['POST'])
 def registerrestaurant():
     email = request.json.get('email')
@@ -71,9 +73,9 @@ def registerrestaurant():
     if not email:
         return jsonify({"msg": "You need to write yor email"}), 422
     if not name:
-        return jsonify({"msg": "You need to write your name"}), 422  
+        return jsonify({"msg": "You need to write your name"}), 422
     if not phone:
-        return jsonify({"msg": "You need to write your phone"}), 422           
+        return jsonify({"msg": "You need to write your phone"}), 422
     if not password_hash:
         return jsonify({"msg": "You need to write your password_hash"}), 422
     restaurantuser = Restaurantuser.query.filter_by(email=email).first()
@@ -93,5 +95,8 @@ def registerrestaurant():
             "restaurantuser": restaurantuser.serialize()
         }
         return jsonify(data), 200
-    else: 
+    else:
         return jsonify({"msg": "Email or password is incorrect"}), 401
+
+
+
