@@ -17,20 +17,17 @@ def post_product():
     _description = request.json.get('description')
     _price = request.json.get('price')
     id_restaurant = request.json.get("id_restaurant")
-    print("b")
     if not _name_product or _name_product == '':
         return jsonify({'msg':'Field name product is required'}), 400
     if not _price or _price == '':
         return jsonify({'msg':'Field price is required'}), 400
     if not id_restaurant or id_restaurant == '':
         return jsonify({'msg':'Field restaurant_id is required'}), 400
-    print("c")
     _product = Product()
     _product.name_product = _name_product
     _product.description = _description
     _product.id_restaurant = id_restaurant
     _product.price = _price
-    print("d")
     db.session.add(_product)
     db.session.commit()
     return jsonify({"msg":"producto registrado"}), 200
