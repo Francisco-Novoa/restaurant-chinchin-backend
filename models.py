@@ -12,7 +12,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable = False)
     password_hash = db.Column(db.String(255), nullable = True)
     phone = db.Column(db.Integer, nullable = False)
-    order= db.relationship("Orders", backref = backref('order_user', cascade = 'all, delete'))
+    order= db.relationship("Orders", backref='order_user', cascade = 'all, delete')
 
     def __repr__(self):
         return 'User %r' % self.name
@@ -33,8 +33,8 @@ class Restaurantuser(db.Model):
     password_hash = db.Column(db.String(255), nullable = True)
     phone = db.Column(db.Integer, nullable = False)
     address = db.Column(db.String(255), nullable = True)
-    product= db.relationship("Product", backref = backref('product', cascade = 'all, delete'))
-    order= db.relationship("Orders", backref = backref('order_restaurant', cascade = 'all, delete'))
+    product= db.relationship("Product", cascade = 'all, delete', backref="product")
+    order= db.relationship("Orders",  backref='order_restaurant', cascade = 'all, delete')
 
     def __repr__(self):
         return 'Restaurantuser %r' % self.name
@@ -77,7 +77,7 @@ class Product(db.Model):
     description = db.Column(db.String(255), nullable = True)
     price = db.Column(db.Float, nullable = False)
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
-    order_details= db.relationship("Orders_details", backref = backref('order_details_product', cascade = 'all, delete'))
+    order_details= db.relationship("Orders_details", backref='order_details_product', cascade = 'all, delete')
 
     def __repr__(self):
         return 'Product %r' % self.name_product
