@@ -70,7 +70,7 @@ def register():
     if not name:
         return jsonify({"msg": "You need to write your name"}), 422       
     if not password_hash:
-        return jsonify({"msg": "You need to write your password_hash"}), 422
+        return jsonify({"msg": "You need to write your password"}), 422
     admin = Admin.query.filter_by(email=email).first()
     if admin:
         return jsonify({"msg": "This email already exist"}), 422

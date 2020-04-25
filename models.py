@@ -118,7 +118,7 @@ class Orders(db.Model):
     comment = db.Column(db.String(500), nullable = True)
     id_user = db.Column(db.Integer, db.ForeignKey("users.id"))
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
-    order_details= db.relationship("Orders_details", backref = backref('order_details_order', cascade = 'all, delete'))
+    order_details= db.relationship("Orders_details", backref ='order_details_order', cascade = 'all, delete')
 
 
     def __repr__(self):

@@ -77,7 +77,7 @@ def registerrestaurant():
     if not phone:
         return jsonify({"msg": "You need to write your phone"}), 422
     if not password_hash:
-        return jsonify({"msg": "You need to write your password_hash"}), 422
+        return jsonify({"msg": "You need to write your password"}), 422
     restaurantuser = Restaurantuser.query.filter_by(email=email).first()
     if restaurantuser:
         return jsonify({"msg": "This email already exist"}), 422
