@@ -53,7 +53,6 @@ CORS(app)
 def main():
     return render_template("index.html", name = 'home')
 
-
 app.register_blueprint(route_users)
 app.register_blueprint(route_restaurantusers)
 app.register_blueprint(route_admins)

@@ -12,7 +12,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable = False)
     password_hash = db.Column(db.String(255), nullable = True)
     phone = db.Column(db.Integer, nullable = False)
-    order= db.relationship("Orders", backref = backref('order_user', cascade = 'all, delete'))
+    order= db.relationship("Orders", backref='order_user', cascade = 'all, delete')
 
     def __repr__(self):
         return 'User %r' % self.name
@@ -28,13 +28,13 @@ class User(db.Model):
 class Restaurantuser(db.Model):
     __tablename__ = 'restaurantusers'
     id = db.Column(db.Integer,primary_key = True)
-    name = db.Column(db.String(255), nullable = True)
+    name = db.Column(db.String(255), unique=True, nullable = True)
     email = db.Column(db.String(255), unique=True, nullable = False)
     password_hash = db.Column(db.String(255), nullable = True)
     phone = db.Column(db.Integer, nullable = False)
     address = db.Column(db.String(255), nullable = True)
-    product= db.relationship("Product", backref = backref('product', cascade = 'all, delete'))
-    order= db.relationship("Orders", backref = backref('order_restaurant', cascade = 'all, delete'))
+    product= db.relationship("Product", cascade = 'all, delete', backref="product")
+    order= db.relationship("Orders",  backref='order_restaurant', cascade = 'all, delete')
 
     def __repr__(self):
         return 'Restaurantuser %r' % self.name
@@ -48,10 +48,6 @@ class Restaurantuser(db.Model):
             'address': self.address,
         }
     
-    def serialize_to_child(self):
-        return{
-            "id": self.id
-        }
 
 class Admin(db.Model):
     __tablename__ = 'admins'
@@ -77,7 +73,7 @@ class Product(db.Model):
     description = db.Column(db.String(255), nullable = True)
     price = db.Column(db.Float, nullable = False)
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
-    order_details= db.relationship("Orders_details", backref = backref('order_details_product', cascade = 'all, delete'))
+    order_details= db.relationship("Orders_details", backref='order_details_product', cascade = 'all, delete')
 
     def __repr__(self):
         return 'Product %r' % self.name_product
@@ -118,7 +114,7 @@ class Orders(db.Model):
     comment = db.Column(db.String(500), nullable = True)
     id_user = db.Column(db.Integer, db.ForeignKey("users.id"))
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
-    order_details= db.relationship("Orders_details", backref = backref('order_details_order', cascade = 'all, delete'))
+    order_details= db.relationship("Orders_details", backref ='order_details_order', cascade = 'all, delete')
 
 
     def __repr__(self):
