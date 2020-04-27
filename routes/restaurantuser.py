@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models import db, Restaurantuser
+import re
+from models import db, Restaurantuser,Product
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import(
     jwt_required, create_access_token, create_access_token
@@ -16,7 +17,7 @@ def restaurantusers(id=None):
             if restaurantuser:
                 return jsonify(restaurantuser.serialize()), 200
             else:
-                return jsonify({"restaurantuser": "Not found"}), 404
+                return jsonify({"msg": "Not found"}), 404
         else:
             restaurantusers = Restaurantuser.query.all()
             restaurantusers = list(
@@ -38,8 +39,27 @@ def restaurantusers(id=None):
         db.session.delete(restaurantuser)
         db.session.commit()
 
-        return jsonify({'restaurantuser': 'Deleted'}), 200
+        return jsonify({'msg': 'Deleted'}), 200
 
+
+@route_restaurantusers.route('/restaurantbyname/<name>', methods=['GET'])
+def byName(name=None):
+        if name is not None:
+            restaurantuser = Restaurantuser.query.filter_by(name=name).first()
+            if restaurantuser:
+                def allofthem(elem):
+                    diccionario=elem.serialize()
+                    diccionario["id_restaurant"]=id
+                    return diccionario
+                id=restaurantuser.id
+                _products = Product.query.filter_by(id_restaurant=restaurantuser.id).all()
+                _product = list(map(allofthem, _products))
+                return jsonify({"restaurant":restaurantuser.serialize(),
+                                "products":_product}), 200
+            else:
+                return jsonify({"msg": "Not found"}), 404
+        else:
+            return jsonify({"msg": "you must specify a name"}), 404
 
 @route_restaurantusers.route('/restaurantlogin', methods=['POST'])
 def login():
@@ -81,6 +101,11 @@ def registerrestaurant():
     restaurantuser = Restaurantuser.query.filter_by(email=email).first()
     if restaurantuser:
         return jsonify({"msg": "This email already exist"}), 422
+    restaurantuser = Restaurantuser.query.filter_by(name=name).first()
+    if restaurantuser:
+        return jsonify({"msg": "This user name already exist"}), 422
+    name=re.sub('\s+', '_',name)
+    print(name)
     restaurantuser = Restaurantuser()
     restaurantuser.email = email
     restaurantuser.name = name

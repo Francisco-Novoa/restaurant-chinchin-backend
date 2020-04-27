@@ -28,7 +28,7 @@ class User(db.Model):
 class Restaurantuser(db.Model):
     __tablename__ = 'restaurantusers'
     id = db.Column(db.Integer,primary_key = True)
-    name = db.Column(db.String(255), nullable = True)
+    name = db.Column(db.String(255), unique=True, nullable = True)
     email = db.Column(db.String(255), unique=True, nullable = False)
     password_hash = db.Column(db.String(255), nullable = True)
     phone = db.Column(db.Integer, nullable = False)
@@ -48,10 +48,6 @@ class Restaurantuser(db.Model):
             'address': self.address,
         }
     
-    def serialize_to_child(self):
-        return{
-            "id": self.id
-        }
 
 class Admin(db.Model):
     __tablename__ = 'admins'
