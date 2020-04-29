@@ -26,9 +26,7 @@ def users(id = None):
         user = User.query.get(id)
         user.name = request.json.get('name')
         user.phone = request.json.get('phone')
-
         db.session.commit()
-
         return jsonify(user.serialize()), 200
 
     if request.method == 'DELETE':

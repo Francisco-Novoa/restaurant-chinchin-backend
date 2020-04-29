@@ -28,7 +28,21 @@ def get_orders_of(id=None):
             details = Orders_details.query.filter_by(id_order=x["id_order"]).all()
             details = list(map(lambda details: details.serialize(), details))
             x["order_details"]=details
-        type(order)
+        return jsonify(order),200
+    else:
+        return {"msg": "order missing"}
+
+@route_orders.route('/orderby/<int:id>')
+def get_orders_by(id=None):
+    if id is not None:
+        order = Orders.query.filter_by(id_user=id).all()
+        if not order:
+            return {"msg":"there are no orders"},200
+        order = list(map(lambda orders: orders.serialize(), order))
+        for x in order:
+            details = Orders_details.query.filter_by(id_order=x["id_order"]).all()
+            details = list(map(lambda details: details.serialize(), details))
+            x["order_details"]=details
         return jsonify(order),200
     else:
         return {"msg": "order missing"}
@@ -43,6 +57,30 @@ def finish (id=None):
     if order.done==True:
         return {"msg":"order already finished"}
     order.done=True
+    db.session.commit()
+    return{"msg":"ok"},200
+
+    #small function to add the id_order and serialize
+    def allofthem(elem):
+                    diccionario=elem.serialize()
+                    diccionario["id_order"]=order.id_order
+                    return diccionario
+    #return everything in an orderly fashion
+    details = Orders_details.query.filter_by(id_order=order.id_order).all()
+    details = list(map(allofthem, details))
+    return jsonify({"order":order.serialize(),
+                    "details":details}), 200  
+
+@route_orders.route("/cancel/<int:id>",methods=['PUT'])
+def cancel (id=None):
+    if not request.is_json:
+        return jsonify({'msg':'JSON Requerido'}), 400
+    if not id:
+        return {"msg":"order not found"}
+    order=Orders.query.filter_by(id_order=id).first()
+    if order.done==True:
+        return {"msg":"order already finished"}
+    order.done=None
     db.session.commit()
     return{"msg":"ok"},200
 
