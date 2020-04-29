@@ -41,7 +41,6 @@ def restaurantusers(id=None):
 
         return jsonify({'msg': 'Deleted'}), 200
 
-
 @route_restaurantusers.route('/restaurantbyname/<name>', methods=['GET'])
 def byName(name=None):
         if name is not None:
@@ -82,7 +81,6 @@ def login():
         return jsonify(data), 200
     else:
         return jsonify({"msg": "Email or password is not correct"}), 401
-
 
 @route_restaurantusers.route('/restaurantregistration', methods=['POST'])
 def registerrestaurant():

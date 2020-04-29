@@ -9,8 +9,6 @@ def get_all_product():
     _product = list(map(lambda product: product.serialize(), _product))
     return jsonify(_product), 200
 
-
-
 @route_product.route('/product', methods = ['POST'])
 def post_product():
     _name_product = request.json.get('name_product')
@@ -40,7 +38,7 @@ def get_product(id):
     return jsonify(_product.serialize()), 200
 
 @route_product.route('/product/from/<int:id>', methods=['GET'])
-def get_all_productof(id):
+def get_all_products_of(id):
     def allofthem(elem):
         diccionario=elem.serialize()
         diccionario["id_restaurant"]=id

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: bf8ed916c655
+Revision ID: 934657179b19
 Revises: 
-Create Date: 2020-04-27 01:40:23.099404
+Create Date: 2020-04-28 20:46:59.441727
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bf8ed916c655'
+revision = '934657179b19'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -49,14 +49,16 @@ def upgrade():
     op.create_table('order',
     sa.Column('id_order', sa.Integer(), nullable=False),
     sa.Column('date', sa.DateTime(), nullable=True),
-    sa.Column('total', sa.Integer(), nullable=False),
+    sa.Column('total', sa.Integer(), nullable=True),
     sa.Column('comment', sa.String(length=500), nullable=True),
+    sa.Column('done', sa.Boolean(), nullable=True),
     sa.Column('id_user', sa.Integer(), nullable=True),
+    sa.Column('user_name', sa.String(length=100), nullable=True),
+    sa.Column('user_phone', sa.String(length=100), nullable=True),
     sa.Column('id_restaurant', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['id_restaurant'], ['restaurantusers.id'], ),
     sa.ForeignKeyConstraint(['id_user'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id_order'),
-    sa.UniqueConstraint('total')
+    sa.PrimaryKeyConstraint('id_order')
     )
     op.create_table('product',
     sa.Column('id_product', sa.Integer(), nullable=False),
@@ -78,13 +80,12 @@ def upgrade():
     op.create_table('order_details',
     sa.Column('id_order_detail', sa.Integer(), nullable=False),
     sa.Column('amount', sa.Integer(), nullable=True),
-    sa.Column('total', sa.Integer(), nullable=True),
+    sa.Column('product_name', sa.String(length=100), nullable=True),
+    sa.Column('product_price', sa.String(length=100), nullable=True),
     sa.Column('id_product', sa.Integer(), nullable=True),
-    sa.Column('id_restaurant', sa.Integer(), nullable=True),
     sa.Column('id_order', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['id_order'], ['order.id_order'], ),
     sa.ForeignKeyConstraint(['id_product'], ['product.id_product'], ),
-    sa.ForeignKeyConstraint(['id_restaurant'], ['restaurantusers.id'], ),
     sa.PrimaryKeyConstraint('id_order_detail')
     )
     # ### end Alembic commands ###

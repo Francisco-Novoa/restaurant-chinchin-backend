@@ -16,59 +16,97 @@ def get_all_orders(id=None):
             order = Orders.query.all()
             order = list(map(lambda orders: order.serialize(), order))
             return jsonify(order), 200
-"""
-{
-    "user_id":"id",
-    "restaurant_id" : "id2",
-    "comment":"comment_text",
-    "productos":"["product_id1 , amount",]
-}
 
-@route_orders("neworder", methods=["POST"])
-def neworder():
-    id_user=request.json.get("user_id")
-    id_restaurant=request.json.get("restaurant_id")
-    comment=request.json.get("comment")
-    productos=request.json.get("productos")
+@route_orders.route('/orderof/<int:id>')
+def get_orders_of(id=None):
+    if id is not None:
+        order = Orders.query.filter_by(id_restaurant=id).all()
+        if not order:
+            return {"msg":"there are no orders"},200
+        order = list(map(lambda orders: orders.serialize(), order))
+        for x in order:
+            details = Orders_details.query.filter_by(id_order=x["id_order"]).all()
+            details = list(map(lambda details: details.serialize(), details))
+            x["order_details"]=details
+        type(order)
+        return jsonify(order),200
+    else:
+        return {"msg": "order missing"}
 
-    if not id_user:
-        return {"msg": "user id missing"}, 422
-    
-    if not id_restaurant:
-        return {"msg": "restaurant id missing"}, 422
-    
-    if not productos:
-        return {"msg": "you need atleast one product"}, 422
+@route_orders.route("/finish/<int:id>",methods=['PUT'])
+def finish (id=None):
+    if not request.is_json:
+        return jsonify({'msg':'JSON Requerido'}), 400
+    if not id:
+        return {"msg":"order not found"}
+    order=Orders.query.filter_by(id_order=id).first()
+    if order.done==True:
+        return {"msg":"order already finished"}
+    order.done=True
+    db.session.commit()
+    return{"msg":"ok"},200
 
-    #making the parent order
+    #small function to add the id_order and serialize
+    def allofthem(elem):
+                    diccionario=elem.serialize()
+                    diccionario["id_order"]=order.id_order
+                    return diccionario
+    #return everything in an orderly fashion
+    details = Orders_details.query.filter_by(id_order=order.id_order).all()
+    details = list(map(allofthem, details))
+    return jsonify({"order":order.serialize(),
+                    "details":details}), 200  
 
+@route_orders.route("/neworder", methods=['POST'])
+def new_order():
+    #check if fields are there
+    if not request.is_json:
+        return jsonify({'msg':'JSON Requerido'}), 400
+    user=request.json.get('user')
+    if not user:
+        return {"msg":"user input is required"}
+    restaurant=request.json.get('restaurant')
+    if not restaurant:
+        return {"msg":"restaurant input is required"}
+    product=request.json.get('product')
+    if not product:
+        return {"msg":"product input is required"}
+    total=request.json.get('total')
+    if not product:
+        return {"msg":"total input is required"}
+    usuario=User.query.filter_by(id=user).first()
+    if not usuario:
+        return {"msg": "usuario inexistente"}
+
+    comment=request.json.get('comment')
+    #add fields to sqlalchemy
     order=Orders()
-    order.id_user=id_user
-    order.id_restaurant=id_restaurant
-    if comment:
-        order.comment=comment
-    order.total=0
+    order.total=total
+    order.id_restaurant=restaurant
+    order.id_user=user
+    order.comment=comment
+    order.user_name=usuario.name
+    order.user_phone=usuario.phone
     db.session.add(order)
     db.session.commit()
-
-    ### making the detail
-
-    for producto in productos:
-        fetched_product = Product.query.filter_by(id=producto[0]).first()
-        if fetched_product:
-            details=Orders_details()
-            details.amount=producto[1]
-            details.total=fetched_product.price
-            details.id_product=producto[0]
-            details.id_order=order.id_order
-            db.session.add(details)
-            db.session.commit()
-        else:
-            return {"msg": "product id not found"}, 404
     
-    return {"msg": "transaccion registered successfully"}, 200
-    
-
-
-
-"""
+    #add each detail
+    for x in product:
+        detail=Orders_details()
+        detail.amount=x["amount"]
+        detail.id_product=x["id_product"]
+        detail.product_name=x["name_product"]
+        detail.product_price=x["price"]
+        detail.id_order=order.id_order
+        db.session.add(detail)
+        db.session.commit()
+   #small function to add the id_order and serialize
+    def allofthem(elem):
+                    diccionario=elem.serialize()
+                    diccionario["id_order"]=order.id_order
+                    return diccionario
+    #return everything in an orderly fashion
+    details = Orders_details.query.filter_by(id_order=order.id_order).all()
+    details = list(map(allofthem, details))
+    return jsonify({"order":order.serialize(),
+                    "details":details}), 200           

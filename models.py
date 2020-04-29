@@ -48,7 +48,6 @@ class Restaurantuser(db.Model):
             'address': self.address,
         }
     
-
 class Admin(db.Model):
     __tablename__ = 'admins'
     id = db.Column(db.Integer,primary_key = True)
@@ -110,44 +109,49 @@ class Orders(db.Model):
     __tablename__ = 'order'
     id_order = db.Column(db.Integer,primary_key = True)
     date = db.Column(db.DateTime, default=datetime.datetime.today())
-    total = db.Column(db.Integer, unique=True, nullable = False)
+    total = db.Column(db.Integer )
     comment = db.Column(db.String(500), nullable = True)
+    done = db.Column(db.Boolean, default=False)
     id_user = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user_name=db.Column(db.String(100))
+    user_phone=db.Column(db.String(100))
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
     order_details= db.relationship("Orders_details", backref ='order_details_order', cascade = 'all, delete')
 
 
     def __repr__(self):
-        return 'Order %r' % self.name
+        return 'Order %r' % self.id_order
 
     def serialize(self):
         return{
-            'id': self.id_order,
+            'id_order': self.id_order,
             'date': self.date,
             'total': self.total,
             "comment": self.comment,
             "id_user": self.id_user,
-            "id_restaurant": self.id_restaurant,
-            "Orders_details": self.order_details.serialize
+            "user_name":self.user_name,
+            "user_phone": self.user_phone,
+            "done":self.done,
+            "id_restaurant": self.id_restaurant
         }
 
 class Orders_details(db.Model):
     __tablename__ = 'order_details'
     id_order_detail = db.Column(db.Integer,primary_key = True)
     amount = db.Column(db.Integer)
-    total = db.Column(db.Integer)
+    product_name = db.Column(db.String(100))
+    product_price = db.Column(db.String(100))
     id_product = db.Column(db.Integer, db.ForeignKey("product.id_product"))
-    id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
     id_order = db.Column(db.Integer, db.ForeignKey("order.id_order"))
     def __repr__(self):
-        return 'Order details %r' % self.name
+        return 'Order details %r' % self.id_order_detail
 
     def serialize(self):
         return{
-            'id': self.id_order_detail,
+            'id_order_detail': self.id_order_detail,
             'amount': self.amount,
-            'total': self.total,
+            "product_name": self.product_name,
+            "product_price":self.product_price,
             'id_product': self.id_product,
-            'id_restaurant': self.id_restaurant,
             'id_order': self.id_order,
         }

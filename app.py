@@ -61,6 +61,7 @@ app.register_blueprint(route_ingredient)
 app.register_blueprint(route_forgetpassusers)
 app.register_blueprint(route_forgetpassrestaurantusers)
 app.register_blueprint(route_forgetpassadmin)
+app.register_blueprint(route_orders)
 
 if __name__ == "__main__":
     manager.run()
