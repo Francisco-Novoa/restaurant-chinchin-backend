@@ -149,12 +149,15 @@ def new_order():
     details = Orders_details.query.filter_by(id_order=order.id_order).all()
     details = list(map(allofthem, details))
     
+   email = request.json.get('email', None)
+        if not email or email == '':
+            return None
+        user = User()
+        user.email = email
         user = User.query.filter_by(email=email).first()
         if not user:
-            return jsonify({"msg": "This email is not registered"}), 404
+            return jsonify({"msg": "This email is not registered"}), 404    
     subject = "Reservation"
         sendMailNew("Order sent", user.email)
         return jsonify({"success": "Email send successfully"}), 200
-    
->>>>>>> yana
     return jsonify({"order":order.serialize(),
