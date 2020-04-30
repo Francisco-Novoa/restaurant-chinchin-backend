@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import db, Orders, Orders_details, Product, Restaurantuser, User
+from libs.functosendemail import sendMailNew
 
 route_orders = Blueprint('route_orders', __name__)
 
@@ -138,6 +139,7 @@ def new_order():
         detail.id_order=order.id_order
         db.session.add(detail)
         db.session.commit()
+        
    #small function to add the id_order and serialize
     def allofthem(elem):
                     diccionario=elem.serialize()
@@ -146,9 +148,20 @@ def new_order():
     #return everything in an orderly fashion
     details = Orders_details.query.filter_by(id_order=order.id_order).all()
     details = list(map(allofthem, details))
+<<<<<<< HEAD
 
     #email here!!
 
     
+=======
+    
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return jsonify({"msg": "This email is not registered"}), 404
+    subject = "Reservation"
+        sendMailNew("Order sent", user.email)
+        return jsonify({"success": "Email send successfully"}), 200
+    
+>>>>>>> yana
+>>>>>>> 8c3decb6f59322550122864df84a3f8f43216715
     return jsonify({"order":order.serialize(),
-                    "details":details}), 200           
