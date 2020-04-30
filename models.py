@@ -69,7 +69,8 @@ class Product(db.Model):
     __tablename__ = 'product'
     id_product = db.Column(db.Integer,primary_key = True)
     name_product = db.Column(db.String(255), nullable = False)
-    description = db.Column(db.String(255), nullable = True)
+    description = db.Column(db.String(255))
+    photo=db.Column(db.String(255), default="empty.png")
     price = db.Column(db.Float, nullable = False)
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
     order_details= db.relationship("Orders_details", backref='order_details_product', cascade = 'all, delete')
