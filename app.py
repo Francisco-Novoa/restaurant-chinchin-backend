@@ -1,4 +1,4 @@
-import os
+import os, getpass
 import json
 from flask import Flask, request, jsonify, render_template, Blueprint, jsonify, send_from_directory
 from flask_migrate import Migrate, MigrateCommand
@@ -10,6 +10,8 @@ from flask_jwt_extended import(
     JWTManager, get_jwt_identity
 )
 from datetime import timedelta
+from werkzeug.utils import secure_filename
+
 from models import db, User, Restaurantuser
 from routes.user import route_users
 from routes.restaurantuser import route_restaurantusers
@@ -22,8 +24,12 @@ from routes.product import route_product
 from routes.ingredient import route_ingredient
 from routes.orders import route_orders
 
+
 # app inits and coginfs
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+ALLOWED_EXTENSIONS_IMAGES={"png","jpg","jpeg","gif","svg"}
+
+
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["DEBUG"] = True
@@ -38,6 +44,8 @@ app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_DEBUG'] = True
 app.config['MAIL_USERNAME'] = 'fineukraine94@gmail.com'
 app.config['MAIL_PASSWORD'] = 'dqhxchlvckgjlbks'
+app.config["DOWNLOAD_FOLDER"]=os.path.join(BASE_DIR,"static")
+
 jwt = JWTManager(app)
 db.init_app(app)
 mail = Mail(app)

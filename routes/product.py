@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import db, Product
+from libs.functions import allowed_file
 
 route_product = Blueprint('route_product', __name__)
 
@@ -80,4 +81,21 @@ def delete_product(id):
     db.session.commit()
     
     return jsonify({'msg':'Product deleted'})
+"""  
+@route_product.route('/product/upload/<int:id>', methods = ['POST'])
+def upload(id):
+    _product = Product.query.get(id)
+    if not _product:
+        return jsonify({'msg':'Product not found'}), 404
+    if "file" not in request.files:
+        return {"msg": "file required"}
+    photo=request.file["photo"]
+    if file.filename=="":
+        return {"msg": "no selected file"}
+    
+    db.session.delete(_product)
+    db.session.commit()
+    
+    return jsonify({'msg':'Product deleted'})
+ """
     

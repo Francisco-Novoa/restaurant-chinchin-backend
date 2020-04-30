@@ -146,5 +146,9 @@ def new_order():
     #return everything in an orderly fashion
     details = Orders_details.query.filter_by(id_order=order.id_order).all()
     details = list(map(allofthem, details))
+
+    #email here!!
+
+    
     return jsonify({"order":order.serialize(),
                     "details":details}), 200           

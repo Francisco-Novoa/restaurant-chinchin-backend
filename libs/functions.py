@@ -8,4 +8,6 @@ def sendMail(subject, to_email, html):
     mail.send(msg)
     return jsonify({"msg": "Email send successfully"}), 200 
 
-    
+def allowed_file(filename,ALLOWED_EXTENSIONS):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
