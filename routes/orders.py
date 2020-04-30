@@ -148,7 +148,27 @@ def new_order():
     #return everything in an orderly fashion
     details = Orders_details.query.filter_by(id_order=order.id_order).all()
     details = list(map(allofthem, details))
+<<<<<<< HEAD
     
 
     
     return jsonify({"order":order.serialize(),
+=======
+
+
+    #email here!!
+
+    
+    email = request.json.get('email', None)
+    if not email or email == '':
+        return None
+    user = User.query.filter_by(email=email).first()
+    user.email = email
+    if not user:
+        return jsonify({"msg": "This email is not registered"}), 404    
+    subject = "Reservation"
+    sendMailNew("Order sent", user.email)
+    
+    return jsonify({"order":order.serialize()}),200
+
+>>>>>>> c4ed890c37afb4baada40f19125e8dd808dda1da
