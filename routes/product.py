@@ -81,6 +81,8 @@ def delete_product(id):
     db.session.commit()
     
     return jsonify({'msg':'Product deleted'})
+
+
 """  
 @route_product.route('/product/upload/<int:id>', methods = ['POST'])
 def upload(id):
@@ -97,5 +99,5 @@ def upload(id):
     db.session.commit()
     
     return jsonify({'msg':'Product deleted'})
- """
+     """
     
