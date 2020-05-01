@@ -109,13 +109,12 @@ class Ingredient(db.Model):
 class Orders(db.Model):
     __tablename__ = 'order'
     id_order = db.Column(db.Integer,primary_key = True)
-    date = db.Column(db.DateTime, default=datetime.datetime.today())
+    date_creation = db.Column(db.DateTime, default=datetime.datetime.today())
+    date_finalization=db.Column(db.DateTime, default=None)
     total = db.Column(db.Integer )
     comment = db.Column(db.String(500), nullable = True)
-    done = db.Column(db.Boolean, default=False)
+    done = db.Column(db.String(100), default="en espera")
     id_user = db.Column(db.Integer, db.ForeignKey("users.id"))
-    user_name=db.Column(db.String(100))
-    user_phone=db.Column(db.String(100))
     id_restaurant = db.Column(db.Integer, db.ForeignKey("restaurantusers.id"))
     order_details= db.relationship("Orders_details", backref ='order_details_order', cascade = 'all, delete')
 
@@ -126,12 +125,11 @@ class Orders(db.Model):
     def serialize(self):
         return{
             'id_order': self.id_order,
-            'date': self.date,
             'total': self.total,
             "comment": self.comment,
             "id_user": self.id_user,
-            "user_name":self.user_name,
-            "user_phone": self.user_phone,
+            "date_creation": self.date_creation,
+            "date_finalization":self.date_finalization,
             "done":self.done,
             "id_restaurant": self.id_restaurant
         }

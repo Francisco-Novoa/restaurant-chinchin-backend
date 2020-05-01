@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models import db, Orders, Orders_details, Product, Restaurantuser, User
 from libs.functosendemail import sendMailNew
+import datetime
 
 route_orders = Blueprint('route_orders', __name__)
 
@@ -26,6 +27,9 @@ def get_orders_of(id=None):
             return {"msg":"there are no orders"},200
         order = list(map(lambda orders: orders.serialize(), order))
         for x in order:
+            user=User().query.filter_by(id=x["id_user"]).first()
+            x["user_name"]=user.name
+            x["user_phone"]=user.phone
             details = Orders_details.query.filter_by(id_order=x["id_order"]).all()
             details = list(map(lambda details: details.serialize(), details))
             x["order_details"]=details
@@ -37,64 +41,67 @@ def get_orders_of(id=None):
 def get_orders_by(id=None):
     if id is not None:
         order = Orders.query.filter_by(id_user=id).all()
+        user=User.query.filter_by(id=id).first()
         if not order:
             return {"msg":"there are no orders"},200
         order = list(map(lambda orders: orders.serialize(), order))
         for x in order:
+            x["user_name"]=user.name
+            x["user_phone"]=user.phone
             details = Orders_details.query.filter_by(id_order=x["id_order"]).all()
             details = list(map(lambda details: details.serialize(), details))
             x["order_details"]=details
         return jsonify(order),200
     else:
-        return {"msg": "order missing"}
+        return {"msg": "no such user"}
 
 @route_orders.route("/finish/<int:id>",methods=['PUT'])
 def finish (id=None):
-    if not request.is_json:
-        return jsonify({'msg':'JSON Requerido'}), 400
     if not id:
         return {"msg":"order not found"}
     order=Orders.query.filter_by(id_order=id).first()
-    if order.done==True:
+    if order.done=="completada":
         return {"msg":"order already finished"}
-    order.done=True
+    if order.done=="cancelada":
+        return {"msg":"order already canceled"}
+    if order.done=="rechazada":
+        return {"msg":"order already rejected"}
+    order.done="completada"
+    order.date_finalization=datetime.datetime.today()
     db.session.commit()
-    return{"msg":"ok"},200
-
-    #small function to add the id_order and serialize
-    def allofthem(elem):
-                    diccionario=elem.serialize()
-                    diccionario["id_order"]=order.id_order
-                    return diccionario
-    #return everything in an orderly fashion
-    details = Orders_details.query.filter_by(id_order=order.id_order).all()
-    details = list(map(allofthem, details))
-    return jsonify({"order":order.serialize(),
-                    "details":details}), 200  
+    return jsonify({"msg":"completada", "date":order.date_finalization}),200
 
 @route_orders.route("/cancel/<int:id>",methods=['PUT'])
 def cancel (id=None):
-    if not request.is_json:
-        return jsonify({'msg':'JSON Requerido'}), 400
     if not id:
         return {"msg":"order not found"}
     order=Orders.query.filter_by(id_order=id).first()
-    if order.done==True:
+    if order.done=="completada":
         return {"msg":"order already finished"}
-    order.done=None
+    if order.done=="cancelada":
+        return {"msg":"order already canceled"}
+    if order.done=="rechazada":
+        return {"msg":"order already rejected"}
+    order.done="cancelada"
+    order.date_finalization=datetime.datetime.today()
     db.session.commit()
-    return{"msg":"ok"},200
-
-    #small function to add the id_order and serialize
-    def allofthem(elem):
-                    diccionario=elem.serialize()
-                    diccionario["id_order"]=order.id_order
-                    return diccionario
-    #return everything in an orderly fashion
-    details = Orders_details.query.filter_by(id_order=order.id_order).all()
-    details = list(map(allofthem, details))
-    return jsonify({"order":order.serialize(),
-                    "details":details}), 200  
+    return jsonify({"msg":"cancelada", "date":order.date_finalization}),200
+  
+@route_orders.route("/reject/<int:id>",methods=['PUT'])
+def reject (id=None):
+    if not id:
+        return {"msg":"order not found"}
+    order=Orders.query.filter_by(id_order=id).first()
+    if order.done=="completada":
+        return {"msg":"order already finished"}
+    if order.done=="cancelada":
+        return {"msg":"order already canceled"}
+    if order.done=="rechazada":
+        return {"msg":"order already rejected"}
+    order.done="rechazada"
+    order.date_finalization=datetime.datetime.today()
+    db.session.commit()
+    return jsonify({"msg":"rechazada", "date":order.date_finalization}),200
 
 @route_orders.route("/neworder", methods=['POST'])
 def new_order():
@@ -150,8 +157,7 @@ def new_order():
     details = list(map(allofthem, details))
 
     #email here!!
-
-
+    
     user = User.query.filter_by(id=order.id_user).first()
 
     if not user:

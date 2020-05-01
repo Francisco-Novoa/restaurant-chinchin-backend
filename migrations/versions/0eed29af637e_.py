@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 3d82b863f90b
+Revision ID: 0eed29af637e
 Revises: 
-Create Date: 2020-04-29 23:18:52.102703
+Create Date: 2020-04-30 22:44:03.877433
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3d82b863f90b'
+revision = '0eed29af637e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -48,13 +48,12 @@ def upgrade():
     )
     op.create_table('order',
     sa.Column('id_order', sa.Integer(), nullable=False),
-    sa.Column('date', sa.DateTime(), nullable=True),
+    sa.Column('date_creation', sa.DateTime(), nullable=True),
+    sa.Column('date_finalization', sa.DateTime(), nullable=True),
     sa.Column('total', sa.Integer(), nullable=True),
     sa.Column('comment', sa.String(length=500), nullable=True),
-    sa.Column('done', sa.Boolean(), nullable=True),
+    sa.Column('done', sa.String(length=100), nullable=True),
     sa.Column('id_user', sa.Integer(), nullable=True),
-    sa.Column('user_name', sa.String(length=100), nullable=True),
-    sa.Column('user_phone', sa.String(length=100), nullable=True),
     sa.Column('id_restaurant', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['id_restaurant'], ['restaurantusers.id'], ),
     sa.ForeignKeyConstraint(['id_user'], ['users.id'], ),
