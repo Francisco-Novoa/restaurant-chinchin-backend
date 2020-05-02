@@ -100,9 +100,9 @@ def upload(id):
             return {"msg": "no selected file"}, 204
         if file and allowed_file(file.filename,ALLOWED_EXTENSIONS_IMAGES):
             filename=secure_filename(file.filename)
-            if os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),products.photo)is not None:
-                if os.path.exists(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),products.photo)):
-                    os.remove(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),products.photo))
+            if (os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),product.photo)is not None) and ( product.photo != "empty.png"):
+                if os.path.exists(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),product.photo)):
+                    os.remove(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),product.photo))
             extension = filename.split(".")[-1]
             now=datetime.datetime.today()
             file.save(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\products"),str(product.id_product)+now.strftime("%H-%M-%S-%f'")+"."+extension))

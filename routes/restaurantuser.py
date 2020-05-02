@@ -140,7 +140,7 @@ def upload(id):
             return {"msg": "no selected file"}, 204
         if file and allowed_file(file.filename,ALLOWED_EXTENSIONS_IMAGES):
             filename=secure_filename(file.filename)
-            if os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo)is not None and restaurant.logo is not "empty.png":
+            if os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo)is not None and restaurant.logo != "empty.png":
                 if os.path.exists(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo)):
                     os.remove(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo))
             extension = filename.split(".")[-1]
