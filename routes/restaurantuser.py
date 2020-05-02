@@ -4,6 +4,7 @@ from models import db, Restaurantuser,Product
 from libs.functions import allowed_file
 from werkzeug.utils import secure_filename
 import os
+import datetime
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import(
     jwt_required, create_access_token, create_access_token
@@ -139,12 +140,13 @@ def upload(id):
             return {"msg": "no selected file"}, 204
         if file and allowed_file(file.filename,ALLOWED_EXTENSIONS_IMAGES):
             filename=secure_filename(file.filename)
-            if os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo)is not None:
+            if os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo)is not None and restaurant.logo is not "empty.png":
                 if os.path.exists(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo)):
                     os.remove(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo))
             extension = filename.split(".")[-1]
-            file.save(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),str(restaurant.id)+"."+extension))
-            restaurant.logo=str(restaurant.id)+"."+extension
+            now=datetime.datetime.today()
+            file.save(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),str(restaurant.id)+now.strftime("%H-%M-%S-%f")+"."+extension))
+            restaurant.logo=str(restaurant.id)+now.strftime("%H-%M-%S-%f")+"."+extension
             db.session.commit()
             return {"msg":"ok"}, 200
 

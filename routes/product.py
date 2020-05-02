@@ -3,6 +3,7 @@ from models import db, Product
 from libs.functions import allowed_file
 from werkzeug.utils import secure_filename
 import os
+import datetime
 ALLOWED_EXTENSIONS_IMAGES={"png","jpg","jpeg","gif","svg"}
 
 route_product = Blueprint('route_product', __name__)
@@ -99,9 +100,13 @@ def upload(id):
             return {"msg": "no selected file"}, 204
         if file and allowed_file(file.filename,ALLOWED_EXTENSIONS_IMAGES):
             filename=secure_filename(file.filename)
+            if os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),products.photo)is not None:
+                if os.path.exists(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),products.photo)):
+                    os.remove(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),products.photo))
             extension = filename.split(".")[-1]
-            file.save(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\products"),str(product.id_product)+"."+extension))
-            product.photo=str(product.id_product)+"."+extension
+            now=datetime.datetime.today()
+            file.save(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\products"),str(product.id_product)+now.strftime("%H-%M-%S-%f'")+"."+extension))
+            product.photo=str(product.id_product)+now.strftime("%H-%M-%S-%f'")+"."+extension
             db.session.commit()
             return {"msg":"ok"}, 200
 

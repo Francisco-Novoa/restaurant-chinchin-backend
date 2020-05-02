@@ -115,7 +115,6 @@ class Orders(db.Model):
     date_creation = db.Column(db.DateTime, default=datetime.datetime.today())
     date_finalization=db.Column(db.DateTime, default=None)
     total = db.Column(db.Integer )
-    avatar=db.Column(db.String(100), default="empty.png")
     comment = db.Column(db.String(500), nullable = True)
     done = db.Column(db.String(100), default="en espera")
     id_user = db.Column(db.Integer, db.ForeignKey("users.id"))
