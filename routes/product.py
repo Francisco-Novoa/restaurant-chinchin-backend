@@ -1,6 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app, send_from_directory
 from models import db, Product
 from libs.functions import allowed_file
+from werkzeug.utils import secure_filename
+import os
+ALLOWED_EXTENSIONS_IMAGES={"png","jpg","jpeg","gif","svg"}
 
 route_product = Blueprint('route_product', __name__)
 
@@ -83,21 +86,27 @@ def delete_product(id):
     return jsonify({'msg':'Product deleted'})
 
 
-"""  
-@route_product.route('/product/upload/<int:id>', methods = ['POST'])
+@route_product.route('/product/upload/<int:id>', methods = ['PUT'])
 def upload(id):
-    _product = Product.query.get(id)
-    if not _product:
-        return jsonify({'msg':'Product not found'}), 404
-    if "file" not in request.files:
-        return {"msg": "file required"}
-    photo=request.file["photo"]
-    if file.filename=="":
-        return {"msg": "no selected file"}
-    
-    db.session.delete(_product)
-    db.session.commit()
-    
-    return jsonify({'msg':'Product deleted'})
-     """
-    
+    if request.method=="PUT":
+        if "photo" not in request.files:
+            return {"msg":"file not found"}, 204
+        product = Product.query.get(id)
+        if not product:
+            return jsonify({'msg':'Product not found'}), 404
+        file=request.files["photo"]
+        if file.filename=="":
+            return {"msg": "no selected file"}, 204
+        if file and allowed_file(file.filename,ALLOWED_EXTENSIONS_IMAGES):
+            filename=secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file.save(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\products"),str(product.id_product)+"."+extension))
+            product.photo=str(product.id_product)+"."+extension
+            db.session.commit()
+            return {"msg":"ok"}, 200
+
+    return {"msg":"i dont know how did you got this"}
+
+@route_product.route("/product/img/<filename>")
+def photo(filename):
+    return send_from_directory(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products/"),filename)

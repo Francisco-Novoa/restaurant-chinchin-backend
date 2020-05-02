@@ -1,11 +1,16 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app, send_from_directory
 import re
 from models import db, Restaurantuser,Product
+from libs.functions import allowed_file
+from werkzeug.utils import secure_filename
+import os
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import(
     jwt_required, create_access_token, create_access_token
 )
 bcrypt = Bcrypt()
+
+ALLOWED_EXTENSIONS_IMAGES={"png","jpg","jpeg","gif","svg"}
 route_restaurantusers = Blueprint('route_restaurantusers', __name__)
 # yana
 @route_restaurantusers.route('/restaurantusers', methods=['GET'])
@@ -121,5 +126,30 @@ def registerrestaurant():
     else:
         return jsonify({"msg": "Email or password is incorrect"}), 401
 
+@route_restaurantusers.route('/restaurant/upload/<int:id>', methods = ['PUT'])
+def upload(id):
+    if request.method=="PUT":
+        if "photo" not in request.files:
+            return {"msg":"file not found"}, 204
+        restaurant = Restaurantuser.query.get(id)
+        if not restaurant:
+            return jsonify({'msg':'Restaurant not found'}), 404
+        file=request.files["photo"]
+        if file.filename=="":
+            return {"msg": "no selected file"}, 204
+        if file and allowed_file(file.filename,ALLOWED_EXTENSIONS_IMAGES):
+            filename=secure_filename(file.filename)
+            if os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo)is not None:
+                if os.path.exists(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo)):
+                    os.remove(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),restaurant.logo))
+            extension = filename.split(".")[-1]
+            file.save(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),str(restaurant.id)+"."+extension))
+            restaurant.logo=str(restaurant.id)+"."+extension
+            db.session.commit()
+            return {"msg":"ok"}, 200
 
+    return {"msg":"i dont know how did you got this"}
 
+@route_restaurantusers.route("/restaurant/img/<filename>")
+def photo(filename):
+    return send_from_directory(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\logos"),filename)

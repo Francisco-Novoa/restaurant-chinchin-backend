@@ -44,7 +44,8 @@ app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_DEBUG'] = True
 app.config['MAIL_USERNAME'] = 'fineukraine94@gmail.com'
 app.config['MAIL_PASSWORD'] = 'dqhxchlvckgjlbks'
-app.config["DOWNLOAD_FOLDER"]=os.path.join(BASE_DIR,"static")
+app.config["UPLOAD_FOLDER"]=os.path.join(BASE_DIR,"static")
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 jwt = JWTManager(app)
 db.init_app(app)

@@ -31,6 +31,7 @@ class Restaurantuser(db.Model):
     name = db.Column(db.String(255), unique=True, nullable = True)
     email = db.Column(db.String(255), unique=True, nullable = False)
     password_hash = db.Column(db.String(255), nullable = True)
+    logo=db.Column(db.String(100), default="empty.png")
     phone = db.Column(db.Integer, nullable = False)
     address = db.Column(db.String(255), nullable = True)
     product= db.relationship("Product", cascade = 'all, delete', backref="product")
@@ -46,6 +47,7 @@ class Restaurantuser(db.Model):
             'email': self.email,
             'phone': self.phone,
             'address': self.address,
+            "logo": self.logo
         }
     
 class Admin(db.Model):
@@ -86,6 +88,7 @@ class Product(db.Model):
             'description': self.description,
             'price': self.price,
             'id_restaurant': self.id_restaurant,
+            "photo":self.photo
         }
 
 class Ingredient(db.Model):
@@ -112,6 +115,7 @@ class Orders(db.Model):
     date_creation = db.Column(db.DateTime, default=datetime.datetime.today())
     date_finalization=db.Column(db.DateTime, default=None)
     total = db.Column(db.Integer )
+    avatar=db.Column(db.String(100), default="empty.png")
     comment = db.Column(db.String(500), nullable = True)
     done = db.Column(db.String(100), default="en espera")
     id_user = db.Column(db.Integer, db.ForeignKey("users.id"))
