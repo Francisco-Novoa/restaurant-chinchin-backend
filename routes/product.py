@@ -105,11 +105,10 @@ def upload(id):
                     os.remove(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img/products"),product.photo))
             extension = filename.split(".")[-1]
             now=datetime.datetime.today()
-            file.save(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\products"),str(product.id_product)+now.strftime("%H-%M-%S-%f'")+"."+extension))
-            product.photo=str(product.id_product)+now.strftime("%H-%M-%S-%f'")+"."+extension
+            file.save(os.path.join(os.path.join(current_app.config["UPLOAD_FOLDER"],"img\\products"),str(product.id_product)+now.strftime("%H-%M-%S-%f")+"."+extension))
+            product.photo=str(product.id_product)+now.strftime("%H-%M-%S-%f")+"."+extension
             db.session.commit()
             return {"msg":"ok"}, 200
-
     return {"msg":"i dont know how did you got this"}
 
 @route_product.route("/product/img/<filename>")
