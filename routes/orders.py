@@ -125,17 +125,28 @@ def new_order():
         return {"msg": "usuario inexistente"}
 
     comment=request.json.get('comment')
+
+    #get the restaurant
+
+    
     #add fields to sqlalchemy
     order=Orders()
     order.total=total
     order.id_restaurant=restaurant
     order.id_user=user
     order.comment=comment
-    order.user_name=usuario.name
-    order.user_phone=usuario.phone
+    
     db.session.add(order)
+
+    #actualize restaurant with new order number
+    restaurant=Restaurantuser.query.filter_by(id=order.id_restaurant).first()
+    
+    restaurant.number_of_orders=restaurant.number_of_orders+1
+    order.order_number=restaurant.number_of_orders
+
     db.session.commit()
     
+
     #add each detail
     for x in product:
         detail=Orders_details()
@@ -161,18 +172,18 @@ def new_order():
     user = User.query.filter_by(id=order.id_user).first()
 
     if not user:
-        return jsonify({"msg": "This email is not registered"}), 404    
+        return jsonify({"msg": "This user is not registered"}), 404    
     subject = "Reservation"
     try : 
         sendMailNew("Order sent", user.email)
     except: 
         print("there is no such mail") 
-    restaurant=Restaurantuser.query.filter_by(id=order.id_restaurant).first()
-
-    if not restaurant:
-        return jsonify({"msg": "This email is not registered"}), 404    
-    subject = "Reservation"
     
+    if not restaurant:
+        return jsonify({"msg": "This restaurant is not registered"}), 404    
+    subject = "Reservation"
+
+
     try : 
         sendMailNew("New Order", restaurant.email)
     except:

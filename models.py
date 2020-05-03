@@ -34,6 +34,7 @@ class Restaurantuser(db.Model):
     logo=db.Column(db.String(100), default="empty.png")
     phone = db.Column(db.Integer, nullable = False)
     address = db.Column(db.String(255), nullable = True)
+    number_of_orders = db.Column(db.Integer, default=0)
     product= db.relationship("Product", cascade = 'all, delete', backref="product")
     order= db.relationship("Orders",  backref='order_restaurant', cascade = 'all, delete')
 
@@ -47,7 +48,8 @@ class Restaurantuser(db.Model):
             'email': self.email,
             'phone': self.phone,
             'address': self.address,
-            "logo": self.logo
+            "logo": self.logo,
+            "number_of_orders" : self.number_of_orders,
         }
     
 class Admin(db.Model):
@@ -112,6 +114,7 @@ class Ingredient(db.Model):
 class Orders(db.Model):
     __tablename__ = 'order'
     id_order = db.Column(db.Integer,primary_key = True)
+    order_number=db.Column(db.Integer)
     date_creation = db.Column(db.DateTime, default=datetime.datetime.today())
     date_finalization=db.Column(db.DateTime, default=None)
     total = db.Column(db.Integer )
@@ -128,6 +131,7 @@ class Orders(db.Model):
     def serialize(self):
         return{
             'id_order': self.id_order,
+            "order_number": self.order_number,
             'total': self.total,
             "comment": self.comment,
             "id_user": self.id_user,
