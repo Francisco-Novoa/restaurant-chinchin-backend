@@ -175,6 +175,7 @@ def new_order():
         return jsonify({"msg": "This user is not registered"}), 404    
     subject = "Reservation"
     try : 
+
         sendMailNew("Order sent", user.email)
     except: 
         print("there is no such mail") 
