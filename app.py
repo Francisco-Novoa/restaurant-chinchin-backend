@@ -73,5 +73,12 @@ app.register_blueprint(route_forgetpassrestaurantusers)
 app.register_blueprint(route_forgetpassadmin)
 app.register_blueprint(route_orders)
 
+@manager.command
+def createsuperuser():
+    username = input("Ingrese nombre de usuario: ")
+    print(username)
+    password = getpass.getpass("Ingrese su password: ")
+    print(password)
+
 if __name__ == "__main__":
     manager.run()
