@@ -42,8 +42,8 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_DEBUG'] = True
-app.config['MAIL_USERNAME'] = 'fineukraine94@gmail.com'
-app.config['MAIL_PASSWORD'] = 'dqhxchlvckgjlbks'
+app.config['MAIL_USERNAME'] = 'postdepressionstressdisorder@gmail.com'
+app.config['MAIL_PASSWORD'] = 'afzwrdwrhgkuwcza'
 app.config["UPLOAD_FOLDER"]=os.path.join(BASE_DIR,"static")
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 

@@ -178,7 +178,7 @@ def new_order():
 
         sendMailNew("Order sent", user.email)
     except: 
-        print("there is no such mail") 
+        print("there is no such mail as " + user.email)
     
     if not restaurant:
         return jsonify({"msg": "This restaurant is not registered"}), 404    
@@ -188,7 +188,7 @@ def new_order():
     try : 
         sendMailNew("New Order", restaurant.email)
     except:
-         print("there is no such mail") 
+        print("there is no such mail as ", restaurant.email, )
 
     return jsonify({"order":order.serialize()}),200
 
